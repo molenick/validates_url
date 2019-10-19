@@ -13,6 +13,7 @@ module ActiveModel
         options.reverse_merge!(message: :url)
         options.reverse_merge!(no_local: false)
         options.reverse_merge!(public_suffix: false)
+        options.reverse_merge!(authority_only: false)
 
         super(options)
       end
@@ -23,12 +24,16 @@ module ActiveModel
           uri = URI.parse(value)
           host = uri && uri.host
           scheme = uri && uri.scheme
+          path = uri && uri.path
+          fragment = uri && uri.fragment
+          query = uri && uri.query
 
           valid_suffix = !options.fetch(:public_suffix) || (host && PublicSuffix.valid?(host, :default_rule => nil))
           valid_no_local = !options.fetch(:no_local) || (host && host.include?('.'))
           valid_scheme = host && scheme && schemes.include?(scheme)
+          valid_authority_only = path.blank? && fragment.blank? && query.blank? && (['?', '#', ':'].exclude? value.to_s.last)
 
-          unless valid_scheme && valid_no_local && valid_suffix
+          unless valid_scheme && valid_no_local && valid_suffix && valid_authority_only
             record.errors.add(attribute, options.fetch(:message), value: value)
           end
         rescue URI::InvalidURIError

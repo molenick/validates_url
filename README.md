@@ -35,6 +35,9 @@ class Pony < ActiveRecord::Base
 
   # with public suffix database https://publicsuffix.org/
   validates :homepage, url: { public_suffix: true }
+
+  # with authority_only (no path)
+  validates :homepage, url: { authority_only: true }
 end
 ```
 

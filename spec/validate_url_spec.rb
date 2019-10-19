@@ -95,6 +95,67 @@ describe "URL validation" do
     end
   end
 
+  context "with an authority-only validator" do
+    before do
+      @user = UserWithAuthority.new
+    end
+
+    it "allows a valid authority-only url" do
+      @user.homepage = "http://example.com"
+      expect(@user).to be_valid
+    end
+
+    it "does allow a url with userinfo" do
+      @user.homepage = "http://admin:admin@example.com"
+      expect(@user).to be_valid
+    end
+
+    it "does allow a url with a port" do
+      @user.homepage = "http://@example.com:22"
+      expect(@user).to be_valid
+    end
+
+    it "does allow a url with a complete authority" do
+      @user.homepage = "http://admin:admin@example.com:22"
+      expect(@user).to be_valid
+    end
+
+    it "does not allow a url with a path" do
+      @user.homepage = "http://example.com/something"
+      expect(@user).not_to be_valid
+    end
+
+    it "does not allow a url with a fragment" do
+      @user.homepage = "http://example.com#stuff"
+      expect(@user).not_to be_valid
+    end
+
+    it "does not allow a url with a query" do
+      @user.homepage = "http://example.com?things"
+      expect(@user).not_to be_valid
+    end
+
+    it "does not allow a url terminated by a colon with no port information" do
+      @user.homepage = "http://example.com:"
+      expect(@user).not_to be_valid
+    end
+
+    it "does not allow a url terminated by a slash" do
+      @user.homepage = "http://example.com/"
+      expect(@user).not_to be_valid
+    end
+
+    it "does not allow a url terminated by a hash" do
+      @user.homepage = "http://example.com#"
+      expect(@user).not_to be_valid
+    end
+
+    it "does not allow a url terminated by a question mark" do
+      @user.homepage = "http://example.com?"
+      expect(@user).not_to be_valid
+    end
+  end
+
   context "with allow nil" do
     before do
       @user = UserWithNil.new

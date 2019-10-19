@@ -18,6 +18,7 @@ ActiveRecord::Base.establish_connection(
 require File.join(File.dirname(__FILE__), '..', 'init')
 
 autoload :User,                  'resources/user'
+autoload :UserWithAuthority,     'resources/user_with_authority'
 autoload :UserWithNil,           'resources/user_with_nil'
 autoload :UserWithBlank,         'resources/user_with_blank'
 autoload :UserWithLegacySyntax,  'resources/user_with_legacy_syntax'
